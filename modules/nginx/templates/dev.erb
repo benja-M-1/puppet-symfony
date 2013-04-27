@@ -4,7 +4,7 @@ server {
 
     root <%= root %>;
 
-    access_log /var/log/nginx/$host-access.log;
+    access_log /var/log/nginx/dev-access.log;
     error_log  /var/log/nginx/dev-error.log error;
 
     index app.php index.html index.htm;
@@ -19,7 +19,7 @@ server {
         # try_files $uri =404;
 
         fastcgi_index app.php;
-        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_pass unix:/tmp/php-fpm-socket;
 
         include fastcgi_params;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;

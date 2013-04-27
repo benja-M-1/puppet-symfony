@@ -17,20 +17,37 @@ class php-cli::install {
     package { 'php-pear':
         ensure => installed
     }
+    exec { 'pear-auto-discover':
+        path => '/usr/bin:/usr/sbin:/bin',
+        onlyif => 'test "`pear config-get auto_discover`" = "0"',
+        command => 'pear config-set auto_discover 1 system',
+    }
+    exec { 'pear-update':
+        path => '/usr/bin:/usr/sbin:/bin',
+        command => 'pear update-channels && pear upgrade-all',
+    }
+    exec { 'install-xdebug':
+        unless => 'pecl list | grep xdebug',
+        path => '/usr/bin:/usr/sbin:/bin',
+        command => 'pecl install xdebug',
+        require => [Exec['pear-auto-discover'], Exec['pear-update']],
+    }
+    file { '/etc/php5/conf.d/xdebug.ini':
+        ensure => file,
+        content => template('php-cli/xdebug.erb'),
+        owner   => 'root',
+        group   => 'root',
+        mode    => '755',
+        require => Exec['install-xdebug']
+    }
 }
 
 class php-cli::configure {
-    exec { 'php-cli-set-timezone':
-        path => '/usr/bin:/usr/sbin:/bin',
-        command => 'sed -i \'s/^[; ]*date.timezone =.*/date.timezone = Europe\/London/g\' /etc/php5/cli/php.ini',
-        onlyif => 'test "`php -c /etc/php5/cli/php.ini -r \"echo ini_get(\'date.timezone\');\"`" = ""',
-        require => Class['php-cli::install']
-    }
-    exec { 'php-cli-disable-short-open-tag':
-        path => '/usr/bin:/usr/sbin:/bin',
-        command => 'sed -i \'s/^[; ]*short_open_tag =.*/short_open_tag = Off/g\' /etc/php5/cli/php.ini',
-        onlyif => 'test "`php -c /etc/php5/cli/php.ini -r \"echo ini_get(\'short_open_tag\');\"`" = "1"',
-        require => Class['php-cli::install']
+    file { '/etc/php5/conf.d/dev.ini':
+        content => template('php-cli/dev.erb'),
+        owner   => 'root',
+        group   => 'root',
+        mode    => '755',
     }
 }
 

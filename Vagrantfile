@@ -13,6 +13,7 @@ Vagrant::Config.run do |config|
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "manifests"
     puppet.module_path = "modules"
-    puppet.manifest_file  = "symfony-dev.pp"
+    puppet.manifest_file  = "symfony-standard-dev.pp"
+    # puppet.options = "--verbose --debug"
   end
 end

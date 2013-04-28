@@ -12,7 +12,6 @@ class php-fpm::install {
 
 class php-fpm::configure {
     file { '/etc/php5/fpm/pool.d/www.conf':
-        ensure => file,
         content => template('php-fpm/pool.erb'),
         owner   => 'root',
         group   => 'root',

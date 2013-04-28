@@ -12,10 +12,12 @@ class php-fpm::install {
 
 class php-fpm::configure {
     file { '/etc/php5/fpm/pool.d/www.conf':
+        replace => true,
         content => template('php-fpm/pool.erb'),
         owner   => 'root',
         group   => 'root',
         mode    => '755',
+        require => Class['php-fpm::install'],
     }
 }
 

@@ -15,10 +15,9 @@ server {
         rewrite ^/(.*)$ /app.php/$1;
     }
 
-    location ~ \.php(/|$) {
+    location ~ ^/(app|app_dev)\.php(/|$) {
         # try_files $uri =404;
 
-        fastcgi_index app.php;
         fastcgi_pass unix:/tmp/php-fpm-socket;
 
         include fastcgi_params;

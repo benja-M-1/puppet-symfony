@@ -8,6 +8,8 @@ class {
     'nginx':   stage => main;
     'mysql':   stage => main;
     'dev':     stage => main;
+    'nodejs':  stage => main;
+    'less':    stage => main;
 }
 
 nginx::vhost {'dev': }

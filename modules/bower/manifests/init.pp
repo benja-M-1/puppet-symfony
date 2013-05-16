@@ -1,5 +1,6 @@
 class bower {
     package { 'bower':
-      provider => npm
+	    provider => npm,
+	    require => Class['nodejs'],
     }
 }

@@ -1,0 +1,33 @@
+<%= scope.function_hiera("symfony_log_dir")  %>/*.log /var/log/php5-fpm.log {
+  daily
+  rotate <%= scope.function_hiera("logs_retention_delay_in_days")  %>
+  maxage <%= scope.function_hiera("logs_retention_delay_in_days")  %>
+  missingok
+  ifempty
+  compress
+  dateext
+  create 644 www-data www-data
+
+  sharedscripts
+  postrotate
+    kill -USR1 `cat /var/run/php5-fpm.pid`
+  endscript
+}
+
+
+/data/var/log/newrelic/*.log {
+  daily
+  rotate <%= scope.function_hiera("logs_retention_delay_in_days")  %>
+  maxage <%= scope.function_hiera("logs_retention_delay_in_days")  %>
+  missingok
+  ifempty
+  compress
+  dateext
+  create 644 www-data www-data
+
+  sharedscripts
+  postrotate
+    kill -USR1 `cat /var/run/php5-fpm.pid`
+    service newrelic-daemon restart
+  endscript
+}
